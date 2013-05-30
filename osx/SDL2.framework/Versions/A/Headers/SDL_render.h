@@ -212,6 +212,12 @@ extern DECLSPEC int SDLCALL SDL_GetRendererInfo(SDL_Renderer * renderer,
                                                 SDL_RendererInfo * info);
 
 /**
+ *  \brief Get the output size of a rendering context.
+ */
+extern DECLSPEC int SDLCALL SDL_GetRendererOutputSize(SDL_Renderer * renderer,
+                                                      int *w, int *h);
+
+/**
  *  \brief Create a texture for a rendering context.
  *
  *  \param renderer The renderer.
@@ -475,8 +481,7 @@ extern DECLSPEC void SDLCALL SDL_RenderGetLogicalSize(SDL_Renderer * renderer, i
  *
  *  \return 0 on success, or -1 on error
  *
- *  \note When the window is resized, the current viewport is automatically
- *        centered within the new window size.
+ *  \note If the window associated with the renderer is resized, the viewport is automatically reset.
  *
  *  \sa SDL_RenderGetViewport()
  *  \sa SDL_RenderSetLogicalSize()
