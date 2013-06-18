@@ -71,7 +71,7 @@
 #define HAVE_SIGNAL_H 1
 /* #undef HAVE_ALTIVEC_H */
 /* #undef HAVE_PTHREAD_NP_H */
-/* #undef HAVE_LIBUDEV_H */
+#define HAVE_LIBUDEV_H 1
 #define HAVE_DBUS_DBUS_H 1
 
 /* C library functions */
