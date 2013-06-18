@@ -43,7 +43,11 @@
 /* #undef volatile */
 
 /* C datatypes */
+#ifdef __LP64__
+#define SIZEOF_VOIDP 8
+#else
 #define SIZEOF_VOIDP 4
+#endif
 #define HAVE_GCC_ATOMICS 1
 /* #undef HAVE_GCC_SYNC_LOCK_TEST_AND_SET */
 #define HAVE_PTHREAD_SPINLOCK 1
