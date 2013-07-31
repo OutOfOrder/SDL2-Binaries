@@ -1,2 +1,2 @@
-#define SDL_REVISION "hg-7246:be3beed886ea"
-#define SDL_REVISION_NUMBER 7246
+#define SDL_REVISION "hg-7553:f0091f8eae33"
+#define SDL_REVISION_NUMBER 7553
