@@ -193,7 +193,7 @@ typedef enum
 {
     SDL_GL_CONTEXT_PROFILE_CORE           = 0x0001,
     SDL_GL_CONTEXT_PROFILE_COMPATIBILITY  = 0x0002,
-    SDL_GL_CONTEXT_PROFILE_ES             = 0x0004
+    SDL_GL_CONTEXT_PROFILE_ES             = 0x0004 /* GLX_CONTEXT_ES2_PROFILE_BIT_EXT */
 } SDL_GLprofile;
 
 typedef enum
@@ -394,7 +394,7 @@ extern DECLSPEC Uint32 SDLCALL SDL_GetWindowPixelFormat(SDL_Window * window);
  *  \param h     The height of the window.
  *  \param flags The flags for the window, a mask of any of the following:
  *               ::SDL_WINDOW_FULLSCREEN, ::SDL_WINDOW_OPENGL,
- *               ::SDL_WINDOW_SHOWN,      ::SDL_WINDOW_BORDERLESS,
+ *               ::SDL_WINDOW_HIDDEN,     ::SDL_WINDOW_BORDERLESS,
  *               ::SDL_WINDOW_RESIZABLE,  ::SDL_WINDOW_MAXIMIZED,
  *               ::SDL_WINDOW_MINIMIZED,  ::SDL_WINDOW_INPUT_GRABBED.
  *
@@ -888,6 +888,16 @@ extern DECLSPEC SDL_GLContext SDLCALL SDL_GL_CreateContext(SDL_Window *
  */
 extern DECLSPEC int SDLCALL SDL_GL_MakeCurrent(SDL_Window * window,
                                                SDL_GLContext context);
+
+/**
+ *  \brief Get the currently active OpenGL window.
+ */
+extern DECLSPEC SDL_Window* SDLCALL SDL_GL_GetCurrentWindow(void);
+
+/**
+ *  \brief Get the currently active OpenGL context.
+ */
+extern DECLSPEC SDL_GLContext SDLCALL SDL_GL_GetCurrentContext(void);
 
 /**
  *  \brief Set the swap interval for the current OpenGL context.

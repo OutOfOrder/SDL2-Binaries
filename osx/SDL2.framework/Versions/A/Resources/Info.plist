@@ -6,6 +6,8 @@
 	<string>10K549</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>SDL2</string>
 	<key>CFBundleGetInfoString</key>
 	<string>http://www.libsdl.org</string>
 	<key>CFBundleIdentifier</key>
