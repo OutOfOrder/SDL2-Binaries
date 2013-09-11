@@ -39,7 +39,7 @@
 #include "SDL_config_android.h"
 #elif defined(__PSP__)
 #include "SDL_config_psp.h"
-#elif defined(__linux__
+#elif defined(__linux__)
 #include "SDL_config_linux.h"
 #else
 /* This is a minimal configuration just to get SDL running on new platforms */
