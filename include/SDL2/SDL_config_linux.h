@@ -20,8 +20,8 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef _SDL_config_linux_h
-#define _SDL_config_linux_h
+#ifndef _SDL_config_h
+#define _SDL_config_h
 
 /**
  *  \file SDL_config.h.in
@@ -185,6 +185,7 @@
 /* #undef SDL_TIMERS_DISABLED */
 /* #undef SDL_VIDEO_DISABLED */
 /* #undef SDL_POWER_DISABLED */
+/* #undef SDL_FILESYSTEM_DISABLED */
 
 /* Enable various audio drivers */
 #define SDL_AUDIO_DRIVER_ALSA 1
@@ -217,6 +218,7 @@
 
 /* Enable various input drivers */
 #define SDL_INPUT_LINUXEV 1
+#define SDL_INPUT_LINUXKD 1
 /* #undef SDL_INPUT_TSLIB */
 /* #undef SDL_JOYSTICK_BEOS */
 /* #undef SDL_JOYSTICK_DINPUT */
@@ -259,6 +261,7 @@
 #define SDL_VIDEO_DRIVER_DUMMY 1
 /* #undef SDL_VIDEO_DRIVER_WINDOWS */
 #define SDL_VIDEO_DRIVER_X11 1
+/* #undef SDL_VIDEO_DRIVER_RPI */
 #define SDL_VIDEO_DRIVER_X11_DYNAMIC "libX11.so.6"
 #define SDL_VIDEO_DRIVER_X11_DYNAMIC_XEXT "libXext.so.6"
 #define SDL_VIDEO_DRIVER_X11_DYNAMIC_XCURSOR "libXcursor.so.1"
@@ -289,6 +292,7 @@
 /* Enable OpenGL support */
 #define SDL_VIDEO_OPENGL 1
 /* #undef SDL_VIDEO_OPENGL_ES */
+/* #undef SDL_VIDEO_OPENGL_ES2 */
 /* #undef SDL_VIDEO_OPENGL_BGL */
 /* #undef SDL_VIDEO_OPENGL_CGL */
 /* #undef SDL_VIDEO_OPENGL_EGL */
@@ -304,8 +308,15 @@
 /* #undef SDL_POWER_BEOS */
 /* #undef SDL_POWER_HARDWIRED */
 
+/* Enable system filesystem support */
+/* #undef SDL_FILESYSTEM_BEOS */
+/* #undef SDL_FILESYSTEM_COCOA */
+/* #undef SDL_FILESYSTEM_DUMMY */
+#define SDL_FILESYSTEM_UNIX 1
+/* #undef SDL_FILESYSTEM_WINDOWS */
+
 /* Enable assembly routines */
 #define SDL_ASSEMBLY_ROUTINES 1
 /* #undef SDL_ALTIVEC_BLITTERS */
 
-#endif /* _SDL_config_linux_h */
+#endif /* _SDL_config_h */
