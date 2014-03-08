@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -279,8 +279,8 @@ HapticPrintSupported(SDL_Haptic * haptic)
     if (supported & SDL_HAPTIC_SINE)
         SDL_Log("      sine\n");
     /* !!! FIXME: put this back when we have more bits in 2.1 */
-    /*if (supported & SDL_HAPTIC_SQUARE)
-        SDL_Log("      square\n");*/
+    /* if (supported & SDL_HAPTIC_SQUARE)
+        SDL_Log("      square\n"); */
     if (supported & SDL_HAPTIC_TRIANGLE)
         SDL_Log("      triangle\n");
     if (supported & SDL_HAPTIC_SAWTOOTHUP)

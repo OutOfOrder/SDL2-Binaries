@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -18,7 +18,7 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../SDL_internal.h"
 
 /* This is the game controller API for Simple DirectMedia Layer */
 
@@ -33,6 +33,7 @@
 #endif
 #define ABS(_x) ((_x) < 0 ? -(_x) : (_x))
 
+#define SDL_CONTROLLER_PLATFORM_FIELD "platform:"
 
 /* a list of currently opened game controllers */
 static SDL_GameController *SDL_gamecontrollers = NULL;
@@ -657,6 +658,78 @@ void SDL_PrivateGameControllerRefreshMapping( ControllerMapping_t *pControllerMa
  * Add or update an entry into the Mappings Database
  */
 int
+SDL_GameControllerAddMappingsFromRW( SDL_RWops * rw, int freerw )
+{
+    const char *platform = SDL_GetPlatform();
+    int controllers = 0;
+    char *buf, *line, *line_end, *tmp, *comma, line_platform[64];
+    size_t db_size, platform_len;
+    
+    if (rw == NULL) {
+        return SDL_SetError("Invalid RWops");
+    }
+    db_size = (size_t)SDL_RWsize(rw);
+    
+    buf = (char *)SDL_malloc(db_size + 1);
+    if (buf == NULL) {
+        if (freerw) {
+            SDL_RWclose(rw);
+        }
+        return SDL_SetError("Could allocate space to not read DB into memory");
+    }
+    
+    if (SDL_RWread(rw, buf, db_size, 1) != 1) {
+        if (freerw) {
+            SDL_RWclose(rw);
+        }
+        SDL_free(buf);
+        return SDL_SetError("Could not read DB");
+    }
+    
+    if (freerw) {
+        SDL_RWclose(rw);
+    }
+    
+    buf[db_size] = '\0';
+    line = buf;
+    
+    while (line < buf + db_size) {
+        line_end = SDL_strchr( line, '\n' );
+        if (line_end != NULL) {
+            *line_end = '\0';
+        }
+        else {
+            line_end = buf + db_size;
+        }
+        
+        /* Extract and verify the platform */
+        tmp = SDL_strstr(line, SDL_CONTROLLER_PLATFORM_FIELD);
+        if ( tmp != NULL ) {
+            tmp += SDL_strlen(SDL_CONTROLLER_PLATFORM_FIELD);
+            comma = SDL_strchr(tmp, ',');
+            if (comma != NULL) {
+                platform_len = comma - tmp + 1;
+                if (platform_len + 1 < SDL_arraysize(line_platform)) {
+                    SDL_strlcpy(line_platform, tmp, platform_len);
+                    if(SDL_strncasecmp(line_platform, platform, platform_len) == 0
+                        && SDL_GameControllerAddMapping(line) > 0) {
+                        controllers++;
+                    }
+                }
+            }
+        }
+        
+        line = line_end + 1;
+    }
+
+    SDL_free(buf);
+    return controllers;
+}
+
+/*
+ * Add or update an entry into the Mappings Database
+ */
+int
 SDL_GameControllerAddMapping( const char *mappingString )
 {
     char *pchGUID;
@@ -762,6 +835,7 @@ SDL_GameControllerLoadHints()
         char *pUserMappings = SDL_malloc( nchHints + 1 );
         char *pTempMappings = pUserMappings;
         SDL_memcpy( pUserMappings, hint, nchHints );
+        pUserMappings[nchHints] = '\0';
         while ( pUserMappings ) {
             char *pchNewLine = NULL;
 
@@ -1150,6 +1224,7 @@ SDL_GameControllerQuit(void)
         pControllerMap = s_pSupportedControllers;
         s_pSupportedControllers = s_pSupportedControllers->next;
         SDL_free( pControllerMap->name );
+        SDL_free( pControllerMap->mapping );
         SDL_free( pControllerMap );
     }
 
