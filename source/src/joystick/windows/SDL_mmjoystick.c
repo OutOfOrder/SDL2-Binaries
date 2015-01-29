@@ -143,8 +143,7 @@ GetJoystickName(int index, const char *szRegKey)
 static int SDL_SYS_numjoysticks = 0;
 
 /* Function to scan the system for joysticks.
- * This function should set SDL_numjoysticks to the number of available
- * joysticks.  Joystick 0 should be the system default joystick.
+ * Joystick 0 should be the system default joystick.
  * It should return 0, or -1 on an unrecoverable fatal error.
  */
 int
@@ -191,11 +190,6 @@ int SDL_SYS_NumJoysticks()
 
 void SDL_SYS_JoystickDetect()
 {
-}
-
-SDL_bool SDL_SYS_JoystickNeedsPolling()
-{
-    return SDL_FALSE;
 }
 
 /* Function to get the device-dependent name of a joystick */

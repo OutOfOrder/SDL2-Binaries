@@ -381,6 +381,13 @@ main(int argc, char *argv[])
         ++frames;
         while (SDL_PollEvent(&event)) {
             SDLTest_CommonEvent(state, &event, &done);
+            if (event.type == SDL_KEYDOWN) {
+                if (event.key.keysym.scancode == SDL_SCANCODE_0) {
+                    SDL_SetWindowPosition(state->windows[0], SDL_WINDOWPOS_CENTERED_DISPLAY(0), SDL_WINDOWPOS_CENTERED_DISPLAY(0));
+                } else if (event.key.keysym.scancode == SDL_SCANCODE_1) {
+                    SDL_SetWindowPosition(state->windows[0], SDL_WINDOWPOS_CENTERED_DISPLAY(1), SDL_WINDOWPOS_CENTERED_DISPLAY(1));
+                }
+            }
         }
         for (i = 0; i < state->num_windows; ++i) {
             int w, h;
