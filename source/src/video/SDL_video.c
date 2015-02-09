@@ -1607,11 +1607,11 @@ SDL_SetWindowPosition(SDL_Window * window, int x, int y)
     CHECK_WINDOW_MAGIC(window,);
 
     if (SDL_WINDOWPOS_ISCENTERED(x) || SDL_WINDOWPOS_ISCENTERED(y)) {
+        SDL_Rect bounds;
         int displayIndex = (x & 0xFFFF);
         if (displayIndex > _this->num_displays) {
             displayIndex = 0;
         }
-        SDL_Rect bounds;
 
         SDL_zero(bounds);
 
