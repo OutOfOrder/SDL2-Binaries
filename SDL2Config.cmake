@@ -36,3 +36,9 @@ if(SDL2_main_LIBRARY)
 endif()
 
 mark_as_advanced(SDL2_INCLUDE_DIR SDL2_LIBRARY SDL2_main_LIBRARY)
+
+if(NOT TARGET SDL2 AND CMAKE_VERSION VERSION_GREATER 3.0.0)
+    add_library(SDL2 INTERFACE)
+    target_link_libraries(SDL2 INTERFACE ${SDL2_LIBRARIES})
+    target_include_directories(SDL2 INTERFACE ${SDL2_INCLUDE_DIRS})
+endif()
