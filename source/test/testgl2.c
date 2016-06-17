@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -59,7 +59,7 @@ static int LoadContext(GL_Context * data)
             return SDL_SetError("Couldn't load GL function %s: %s\n", #func, SDL_GetError()); \
         } \
     } while ( 0 );
-#endif /* _SDL_NOGETPROCADDR_ */
+#endif /* __SDL_NOGETPROCADDR__ */
 
 #include "../src/render/opengl/SDL_glfuncs.h"
 #undef SDL_PROC
@@ -357,7 +357,7 @@ main(int argc, char *argv[])
             SDL_Log("SDL_GL_ACCELERATED_VISUAL: requested %d, got %d\n", accel,
                    value);
         } else {
-			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to get SDL_GL_ACCELERATED_VISUAL: %s\n",
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to get SDL_GL_ACCELERATED_VISUAL: %s\n",
                    SDL_GetError());
         }
     }
@@ -381,13 +381,6 @@ main(int argc, char *argv[])
         ++frames;
         while (SDL_PollEvent(&event)) {
             SDLTest_CommonEvent(state, &event, &done);
-            if (event.type == SDL_KEYDOWN) {
-                if (event.key.keysym.scancode == SDL_SCANCODE_0) {
-                    SDL_SetWindowPosition(state->windows[0], SDL_WINDOWPOS_CENTERED_DISPLAY(0), SDL_WINDOWPOS_CENTERED_DISPLAY(0));
-                } else if (event.key.keysym.scancode == SDL_SCANCODE_1) {
-                    SDL_SetWindowPosition(state->windows[0], SDL_WINDOWPOS_CENTERED_DISPLAY(1), SDL_WINDOWPOS_CENTERED_DISPLAY(1));
-                }
-            }
         }
         for (i = 0; i < state->num_windows; ++i) {
             int w, h;

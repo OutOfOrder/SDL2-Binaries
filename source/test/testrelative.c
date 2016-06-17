@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -30,7 +30,7 @@ SDL_Event event;
 static void
 DrawRects(SDL_Renderer * renderer, SDL_Rect * rect)
 {
-    SDL_SetRenderDrawColor(renderer, 255, 127, 0, 255);
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     SDL_RenderFillRect(renderer, rect);
 }
 
@@ -49,16 +49,29 @@ loop(){
         }
     }
     for (i = 0; i < state->num_windows; ++i) {
+        SDL_Rect viewport;
         SDL_Renderer *renderer = state->renderers[i];
         if (state->windows[i] == NULL)
             continue;
-        SDL_SetRenderDrawColor(renderer, 0xA0, 0xA0, 0xA0, 0xFF);
+        SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
         SDL_RenderClear(renderer);
+
+        /* Wrap the cursor rectangle at the screen edges to keep it visible */
+        SDL_RenderGetViewport(renderer, &viewport);
+        if (rect.x < viewport.x) rect.x += viewport.w;
+        if (rect.y < viewport.y) rect.y += viewport.h;
+        if (rect.x > viewport.x + viewport.w) rect.x -= viewport.w;
+        if (rect.y > viewport.y + viewport.h) rect.y -= viewport.h;
 
         DrawRects(renderer, &rect);
 
         SDL_RenderPresent(renderer);
     }
+#ifdef __EMSCRIPTEN__
+    if (done) {
+        emscripten_cancel_main_loop();
+    }
+#endif
 }
 
 int

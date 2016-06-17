@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -38,8 +38,9 @@
 #define FULLSCREEN_MASK ( SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_FULLSCREEN )
 
 /*
-.which to scancode
-https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent#Constants
+.keyCode to scancode
+https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
+https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
 */
 static const SDL_Scancode emscripten_scancode_table[] = {
     /*  0 */    SDL_SCANCODE_UNKNOWN,
@@ -296,7 +297,7 @@ Emscripten_ConvertUTF32toUTF8(Uint32 codepoint, char * text)
     return SDL_TRUE;
 }
 
-int
+EM_BOOL
 Emscripten_HandleMouseMove(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData)
 {
     SDL_WindowData *window_data = userData;
@@ -322,7 +323,7 @@ Emscripten_HandleMouseMove(int eventType, const EmscriptenMouseEvent *mouseEvent
     return 0;
 }
 
-int
+EM_BOOL
 Emscripten_HandleMouseButton(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData)
 {
     SDL_WindowData *window_data = userData;
@@ -344,7 +345,7 @@ Emscripten_HandleMouseButton(int eventType, const EmscriptenMouseEvent *mouseEve
     return 1;
 }
 
-int
+EM_BOOL
 Emscripten_HandleMouseFocus(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData)
 {
     SDL_WindowData *window_data = userData;
@@ -352,7 +353,7 @@ Emscripten_HandleMouseFocus(int eventType, const EmscriptenMouseEvent *mouseEven
     return 1;
 }
 
-int
+EM_BOOL
 Emscripten_HandleWheel(int eventType, const EmscriptenWheelEvent *wheelEvent, void *userData)
 {
     SDL_WindowData *window_data = userData;
@@ -360,7 +361,7 @@ Emscripten_HandleWheel(int eventType, const EmscriptenWheelEvent *wheelEvent, vo
     return 1;
 }
 
-int
+EM_BOOL
 Emscripten_HandleFocus(int eventType, const EmscriptenFocusEvent *wheelEvent, void *userData)
 {
     SDL_WindowData *window_data = userData;
@@ -368,28 +369,27 @@ Emscripten_HandleFocus(int eventType, const EmscriptenFocusEvent *wheelEvent, vo
     return 1;
 }
 
-int
+EM_BOOL
 Emscripten_HandleTouch(int eventType, const EmscriptenTouchEvent *touchEvent, void *userData)
 {
-    /*SDL_WindowData *window_data = userData;*/
+    SDL_WindowData *window_data = userData;
     int i;
 
-    SDL_TouchID deviceId = 0;
-    if (!SDL_GetTouch(deviceId)) {
-        if (SDL_AddTouch(deviceId, "") < 0) {
-             return 0;
-        }
+    SDL_TouchID deviceId = 1;
+    if (SDL_AddTouch(deviceId, "") < 0) {
+         return 0;
     }
 
     for (i = 0; i < touchEvent->numTouches; i++) {
-        long x, y, id;
+        SDL_FingerID id;
+        float x, y;
 
         if (!touchEvent->touches[i].isChanged)
             continue;
 
         id = touchEvent->touches[i].identifier;
-        x = touchEvent->touches[i].canvasX;
-        y = touchEvent->touches[i].canvasY;
+        x = touchEvent->touches[i].canvasX / (float)window_data->windowed_width;
+        y = touchEvent->touches[i].canvasY / (float)window_data->windowed_height;
 
         if (eventType == EMSCRIPTEN_EVENT_TOUCHMOVE) {
             SDL_SendTouchMotion(deviceId, id, x, y, 1.0f);
@@ -404,7 +404,7 @@ Emscripten_HandleTouch(int eventType, const EmscriptenTouchEvent *touchEvent, vo
     return 1;
 }
 
-int
+EM_BOOL
 Emscripten_HandleKey(int eventType, const EmscriptenKeyboardEvent *keyEvent, void *userData)
 {
     Uint32 scancode;
@@ -443,16 +443,17 @@ Emscripten_HandleKey(int eventType, const EmscriptenKeyboardEvent *keyEvent, voi
             || keyEvent->keyCode == 8 /* backspace */ || keyEvent->keyCode == 9 /* tab */;
 }
 
-int
+EM_BOOL
 Emscripten_HandleKeyPress(int eventType, const EmscriptenKeyboardEvent *keyEvent, void *userData)
 {
     char text[5];
-    Emscripten_ConvertUTF32toUTF8(keyEvent->charCode, text);
-    SDL_SendKeyboardText(text);
+    if (Emscripten_ConvertUTF32toUTF8(keyEvent->charCode, text)) {
+        SDL_SendKeyboardText(text);
+    }
     return 1;
 }
 
-int
+EM_BOOL
 Emscripten_HandleFullscreenChange(int eventType, const EmscriptenFullscreenChangeEvent *fullscreenChangeEvent, void *userData)
 {
     /*make sure this is actually our element going fullscreen*/
@@ -514,7 +515,7 @@ Emscripten_HandleFullscreenChange(int eventType, const EmscriptenFullscreenChang
     return 0;
 }
 
-int
+EM_BOOL
 Emscripten_HandleResize(int eventType, const EmscriptenUiEvent *uiEvent, void *userData)
 {
     SDL_WindowData *window_data = userData;
@@ -554,7 +555,7 @@ Emscripten_HandleResize(int eventType, const EmscriptenUiEvent *uiEvent, void *u
     return 0;
 }
 
-int
+EM_BOOL
 Emscripten_HandleVisibilityChange(int eventType, const EmscriptenVisibilityChangeEvent *visEvent, void *userData)
 {
     SDL_WindowData *window_data = userData;
@@ -621,10 +622,15 @@ Emscripten_UnregisterEventHandlers(SDL_WindowData *data)
     emscripten_set_touchmove_callback("#canvas", NULL, 0, NULL);
     emscripten_set_touchcancel_callback("#canvas", NULL, 0, NULL);
 
-    emscripten_set_keydown_callback("#window", NULL, 0, NULL);
-    emscripten_set_keyup_callback("#window", NULL, 0, NULL);
+    const char *target = SDL_GetHint(SDL_HINT_EMSCRIPTEN_KEYBOARD_ELEMENT);
+    if (!target) {
+        target = "#window";
+    }
 
-    emscripten_set_keypress_callback("#window", NULL, 0, NULL);
+    emscripten_set_keydown_callback(target, NULL, 0, NULL);
+    emscripten_set_keyup_callback(target, NULL, 0, NULL);
+
+    emscripten_set_keypress_callback(target, NULL, 0, NULL);
 
     emscripten_set_fullscreenchange_callback("#document", NULL, 0, NULL);
 

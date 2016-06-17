@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -19,6 +19,8 @@
  3. This notice may not be removed or altered from any source distribution.
 */
 #include "../../SDL_internal.h"
+
+#if SDL_VIDEO_DRIVER_NACL
 
 #include "SDL.h"
 #include "../../events/SDL_sysevents.h"
@@ -430,3 +432,7 @@ void NACL_PumpEvents(_THIS) {
     }
   }
 }
+
+#endif /* SDL_VIDEO_DRIVER_NACL */
+
+/* vi: set ts=4 sw=4 expandtab: */

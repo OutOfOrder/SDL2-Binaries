@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -13,9 +13,6 @@
 #include <stdio.h>
 
 #include "SDL.h"
-#include "SDL_endian.h"
-#include "SDL_cpuinfo.h"
-#include "SDL_assert.h"
 
 /*
  * Watcom C flags these as Warning 201: "Unreachable code" if you just
@@ -170,7 +167,7 @@ TestAssertions(SDL_bool verbose)
 #endif
 
     {
-        const SDL_assert_data *item = SDL_GetAssertionReport();
+        const SDL_AssertData *item = SDL_GetAssertionReport();
         while (item) {
             SDL_Log("'%s', %s (%s:%d), triggered %u times, always ignore: %s.\n",
                 item->condition, item->function, item->filename,
