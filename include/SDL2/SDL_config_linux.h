@@ -83,6 +83,7 @@
 #define HAVE_LIBUDEV_H 1
 #define HAVE_DBUS_DBUS_H 1
 #define HAVE_IBUS_IBUS_H 1
+/* #undef HAVE_FCITX_FRONTEND_H */
 
 /* C library functions */
 #define HAVE_MALLOC 1
@@ -309,7 +310,6 @@
 #define SDL_VIDEO_DRIVER_X11_XSHAPE 1
 #define SDL_VIDEO_DRIVER_X11_XVIDMODE 1
 #define SDL_VIDEO_DRIVER_X11_SUPPORTS_GENERIC_EVENTS 1
-#define SDL_VIDEO_DRIVER_X11_CONST_PARAM_XDATA32 1
 #define SDL_VIDEO_DRIVER_X11_CONST_PARAM_XEXTADDDISPLAY 1
 #define SDL_VIDEO_DRIVER_X11_HAS_XKBKEYCODETOKEYSYM 1
 /* #undef SDL_VIDEO_DRIVER_NACL */
@@ -357,5 +357,8 @@
 /* Enable assembly routines */
 #define SDL_ASSEMBLY_ROUTINES 1
 /* #undef SDL_ALTIVEC_BLITTERS */
+
+/* Enable ime support */
+#define SDL_USE_IME 1
 
 #endif /* _SDL_config_linux_h */
